@@ -1,4 +1,4 @@
-package com.zzw.domain.Message.model.req;
+package com.zzw.domain.WxMessage.model.req;
 
 import java.util.List;
 

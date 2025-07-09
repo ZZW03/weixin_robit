@@ -1,4 +1,4 @@
-package com.zzw.domain.Message.model.res;
+package com.zzw.domain.WxMessage.model.res;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: weixin-server
+  weixin:
+    currentUserName: wxid_45irb1z1yl4d12
+    adminKey: 999222
+    authCode: b126fc11-00f8-4479-8266-35d2bd2b698c
+    baseUrl: http://49.235.216.182:1238/
+    sendMessageURl: message/SendTextMessage
+    connect : ws://49.235.216.182:1238/ws/GetSyncMsg?key=
+  qq:
+    token: Aa792144169
+    baseUrl: http://49.235.216.182:3000/
+    websocket:
+      url: ws://49.235.216.182:3001/
+server:
+  port: 8080
+
