@@ -37,7 +37,7 @@ public class QQPrivateMessage extends QQBaseMessage {
         List<MessageBaseElement> message = new ArrayList<>();
         MessageBaseElement messageBaseElement = new MessageBaseElement();
         messageBaseElement.setType("text");
-        messageBaseElement.setData(new MessageBaseElement.MessageData("123654"));
+        messageBaseElement.setData(new MessageBaseElement.MessageData(""));
         message.add(messageBaseElement);
         qqSimpleSendMessage.setMessage(message);
 

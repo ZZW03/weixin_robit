@@ -53,7 +53,7 @@ public class MyWebSocketClientQQ extends AbstractWebSocketEndpoint implements Me
             log.info("{}",JSONObject.toJSONString(qqPrivateMessage));
             QQSimpleSendMessage qqSimpleSendMessage = qqPrivateMessage.toQQSimpleSendMessage();
 
-            Response<QQSendResponse> qqSendResponseResponse = qqMessageRepository.sendMessage(qqSimpleSendMessage);
+            Response<QQSendResponse> qqSendResponseResponse = qqMessageRepository.sendMessage(qqPrivateMessage);
             log.info("回复消息:{}",JSONObject.toJSONString(qqSendResponseResponse.getData()));
         }else {
             log.info("不处理");
