@@ -13,6 +13,43 @@ spring:
     baseUrl: http://49.235.216.182:3000/
     websocket:
       url: ws://49.235.216.182:3001/
+  ai:
+    openai:
+      base-url: https://api.deepseek.com
+      api-key: sk-4c481a3983b5447697d6972172cef392
+      chat:
+        options:
+          model: deepseek-chat
+    ollama:
+      base-url: http://49.235.216.182:11434
+      mode:
+      embedding-model: nomic-embed-text
+      embedding:
+        options:
+          num-batch: 1536
+    vectorstore:
+      pgvector:
+        datasource:
+          driver-class-name: org.postgresql.Driver
+          username: postgres
+          password: postgres
+          url: jdbc:postgresql://49.235.216.182:15432/postgres
+          type: com.zaxxer.hikari.HikariDataSource
+          hikari:
+            maximum-pool-size: 5
+            minimum-idle: 2
+            idle-timeout: 30000
+            connection-timeout: 30000
+    mcp:
+      client:
+        sse:
+          connections:
+            mcp-server-csdn:
+              url: http://49.235.216.182:8101
+            mcp-server-context7:
+              url: http://122.51.46.6:5001
+
+
 server:
   port: 8080
 

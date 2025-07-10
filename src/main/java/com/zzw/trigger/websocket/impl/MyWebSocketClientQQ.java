@@ -49,12 +49,10 @@ public class MyWebSocketClientQQ extends AbstractWebSocketEndpoint implements Me
         if (postType.equals("meta_event")){
 
         }else if (postType.equals("message")){
-            log.info("收到私聊消息:{}",json);
             QQPrivateMessage qqPrivateMessage = obj.toJavaObject(QQPrivateMessage.class);
-
             log.info("{}",JSONObject.toJSONString(qqPrivateMessage));
             QQSimpleSendMessage qqSimpleSendMessage = qqPrivateMessage.toQQSimpleSendMessage();
-            log.info("发送消息,请求参数为:{}",JSONObject.toJSONString(qqSimpleSendMessage));
+
             Response<QQSendResponse> qqSendResponseResponse = qqMessageRepository.sendMessage(qqSimpleSendMessage);
             log.info("回复消息:{}",JSONObject.toJSONString(qqSendResponseResponse.getData()));
         }else {

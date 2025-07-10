@@ -7,6 +7,7 @@ import com.zzw.domain.WxMessage.model.req.MessageRequest;
 import com.zzw.domain.WxMessage.model.req.MsgItem;
 import com.zzw.domain.WxMessage.model.res.DataItem;
 import org.junit.jupiter.api.Test;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,6 +19,9 @@ public class main {
 
     @Autowired
     MessageOperation messageOperation;
+
+    @Autowired
+    ChatClient chatClient;
 
     @Test
     public void test(){
@@ -31,6 +35,11 @@ public class main {
         messageRequest.setMsgItem(MsgItem);
         Response<List<DataItem>> dataItemResponse = messageOperation.sendMessage(messageRequest);
         System.out.println(JSON.toJSONString(dataItemResponse));
+    }
+
+    @Test
+    public  void  test2(){
+        System.out.println(chatClient.prompt("白痴").call().content());
     }
 
 }
