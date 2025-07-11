@@ -16,4 +16,6 @@ public class QQSendResponse<T> {
         ok, error,failed
     }
 
+
+
 }

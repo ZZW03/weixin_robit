@@ -1,17 +1,21 @@
 package com.zzw.domain.QQMessage.model.websockekResp;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data
-public class MessageBaseElement {
 
-    private String type;
-    private MessageData data;
-
-    @Data
-    @AllArgsConstructor
-    public static class MessageData {
-        private String text;
-    }
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = TextMessageElement.class, name = "text"),
+        @JsonSubTypes.Type(value = FaceMessageElement.class, name = "face"),
+        @JsonSubTypes.Type(value = ImageMessageElement.class, name = "image"),
+        @JsonSubTypes.Type(value = ReplyMessageElement.class, name = "reply"),
+})
+public abstract class MessageBaseElement {
+    public abstract String getType();
 }

@@ -29,20 +29,4 @@ public class QQPrivateMessage extends QQBaseMessage {
         private String card;
     }
 
-    //调用模型去解决
-    public QQSimpleSendMessage toQQSimpleSendMessage(){
-        QQSimpleSendMessage qqSimpleSendMessage = new QQSimpleSendMessage();
-        qqSimpleSendMessage.setUserId(this.getSender().getUserId());
-
-        List<MessageBaseElement> message = new ArrayList<>();
-        MessageBaseElement messageBaseElement = new MessageBaseElement();
-        messageBaseElement.setType("text");
-        messageBaseElement.setData(new MessageBaseElement.MessageData(""));
-        message.add(messageBaseElement);
-        qqSimpleSendMessage.setMessage(message);
-
-        return qqSimpleSendMessage;
-    }
-
-
 }

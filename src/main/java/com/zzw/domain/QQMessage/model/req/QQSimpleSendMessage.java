@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,4 +15,5 @@ public class QQSimpleSendMessage {
     @JsonProperty("user_id")
     private String userId;
     private List<MessageBaseElement> message;
+
 }
