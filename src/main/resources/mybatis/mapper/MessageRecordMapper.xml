@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zzw.infrastuction.dao.MessageRecordMapper">
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.zzw.infrastuction.dao.po.MessageRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO message_record
+(message_type, user_id, message_id, message_seq, real_seq, sender, message, message_format, sub_type, target_id, create_time, update_time)
+VALUES
+    (#{messageType}, #{userId}, #{messageId}, #{messageSeq}, #{realSeq},
+     #{sender}::jsonb,
+     #{message}::jsonb,
+     #{messageFormat}, #{subType}, #{targetId}, #{createTime}, #{updateTime})
+    </insert>
+
+    <!-- 根据id删除 -->
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM message_record WHERE id = #{id}
+    </delete>
+
+    <!-- 根据id更新 -->
+    <update id="updateById" parameterType="com.zzw.infrastuction.dao.po.MessageRecord">
+        UPDATE message_record
+        SET
+            message_type = #{messageType},
+            user_id = #{userId},
+            message_id = #{messageId},
+            message_seq = #{messageSeq},
+            real_seq = #{realSeq},
+            sender = #{sender},
+            message = #{message},
+            message_format = #{messageFormat},
+            sub_type = #{subType},
+            target_id = #{targetId},
+            create_time = #{createTime},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据id查询 -->
+    <select id="selectById" parameterType="long" resultType="com.zzw.infrastuction.dao.po.MessageRecord">
+        SELECT * FROM message_record WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有 -->
+    <select id="selectAll" resultType="com.zzw.infrastuction.dao.po.MessageRecord">
+        SELECT * FROM message_record
+    </select>
+
+    <!-- 根据 userId 查询 -->
+    <select id="selectByUserId" parameterType="string" resultType="com.zzw.infrastuction.dao.po.MessageRecord">
+        SELECT * FROM message_record WHERE user_id = #{userId}
+    </select>
+
+</mapper>

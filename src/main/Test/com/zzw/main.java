@@ -43,12 +43,27 @@ public class main {
 
     @Test
     public void test2() {
-        System.out.println(
-                chatClient.prompt()
-                        .messages(new UserMessage("你好"))  // 使用框架的UserMessage
-                        .call()
-                        .content()
-        );
+
+        String json = """
+                 {
+                     "user_id": "textValue",
+                     "message": [
+                         {
+                             "type": "face",
+                             "data": {
+                                 "id": "1"
+                             }
+                         },
+                         {
+                             "type": "text",
+                             "data": {
+                                 "text": "12313\\n"
+                             }
+                         }
+                     ]
+                 }
+                """;
+        System.out.println(JSON.toJSONString(json));
     }
 
 }

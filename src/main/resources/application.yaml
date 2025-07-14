@@ -1,4 +1,16 @@
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://49.235.216.182:15432/postgres
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      idle-timeout: 30000
+      connection-timeout: 30000
+
   application:
     name: weixin-server
   weixin:
@@ -48,8 +60,16 @@ spring:
               url: http://49.235.216.182:8101
             mcp-server-context7:
               url: http://122.51.46.6:5001
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  config-location: classpath:/mybatis/config/mybatis-config.xml
 
 
 server:
   port: 8080
 
+#logging:
+#  level:
+#    com.zzw.infrastuction.dao: debug  # 你的 Mapper 接口包
+#    org.mybatis: debug                # MyBatis 主包
+#    java.sql: debug                   # SQL 层（JDBC）

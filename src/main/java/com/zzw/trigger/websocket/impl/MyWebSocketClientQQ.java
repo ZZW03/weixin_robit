@@ -1,15 +1,19 @@
 package com.zzw.trigger.websocket.impl;
 
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.zzw.api.model.response.Response;
 import com.zzw.domain.QQMessage.model.req.QQSimpleSendMessage;
 import com.zzw.domain.QQMessage.model.resp.QQSendResponse;
 import com.zzw.domain.QQMessage.model.websockekResp.QQPrivateMessage;
 import com.zzw.infrastuction.adapter.respository.QQMessageRepository;
+import com.zzw.infrastuction.dao.MessageRecordMapper;
+import com.zzw.infrastuction.dao.po.MessageRecord;
 import com.zzw.trigger.websocket.AbstractWebSocketEndpoint;
 import jakarta.websocket.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,6 +36,9 @@ public class MyWebSocketClientQQ extends AbstractWebSocketEndpoint implements Me
     @Autowired
     private QQMessageRepository qqMessageRepository;
 
+    @Autowired
+    MessageRecordMapper messageRecordMapper;
+
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
         this.session = session;
@@ -50,10 +57,10 @@ public class MyWebSocketClientQQ extends AbstractWebSocketEndpoint implements Me
 
 
         }else if (postType.equals("message")){
-            log.info(json);
+            log.info(JSON.toJSONString(json));
             QQPrivateMessage qqPrivateMessage = JSONObject.parseObject(json,QQPrivateMessage.class);
-            log.info("{}",JSONObject.toJSONString(qqPrivateMessage));
-
+            MessageRecord messageRecord = qqPrivateMessage.toMessageRecord();
+            messageRecordMapper.insert(messageRecord);
             Response<QQSendResponse> qqSendResponseResponse = qqMessageRepository.sendMessage(qqPrivateMessage);
 
         }else {
