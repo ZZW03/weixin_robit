@@ -7,8 +7,9 @@ import java.time.LocalDateTime;
 
 public class DateTimeTools {
 
-    @Tool(name = "获取当前时间")
+    @Tool(description = "获取当前时间")
     String getCurrentDateTime() {
         return LocalDateTime.now().atZone(LocaleContextHolder.getTimeZone().toZoneId()).toString();
     }
+
 }
