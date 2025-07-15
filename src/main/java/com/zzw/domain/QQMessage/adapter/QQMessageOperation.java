@@ -7,7 +7,9 @@ import com.zzw.domain.QQMessage.model.websockekResp.QQPrivateMessage;
 
 public interface QQMessageOperation {
 
-    Response<QQSendResponse> sendMessage(QQPrivateMessage request) throws Exception;
+    Response<QQSendResponse> sendPrivateMessage(QQPrivateMessage request) throws Exception;
+
+    Response<QQSendResponse> sendGroupMessage(QQPrivateMessage request);
 
 
 }

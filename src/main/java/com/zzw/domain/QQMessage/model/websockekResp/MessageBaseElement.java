@@ -15,6 +15,7 @@ import lombok.Data;
         @JsonSubTypes.Type(value = FaceMessageElement.class, name = "face"),
         @JsonSubTypes.Type(value = ImageMessageElement.class, name = "image"),
         @JsonSubTypes.Type(value = ReplyMessageElement.class, name = "reply"),
+        @JsonSubTypes.Type(value = AtMessageElement.class, name = "at"),
 })
 public abstract class MessageBaseElement {
     public abstract String getType();

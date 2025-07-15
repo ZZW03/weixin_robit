@@ -58,6 +58,9 @@ public class QQPrivateMessage extends QQBaseMessage {
     @JSONField(name = "time")
     private Long time;
 
+    @JSONField(name = "group_id")
+    private String groupId;
+
     @Data
     public static class Sender {
         @JsonProperty("user_id")

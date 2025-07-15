@@ -25,6 +25,8 @@ spring:
     baseUrl: http://49.235.216.182:3000/
     websocket:
       url: ws://49.235.216.182:3001/
+
+
   ai:
     openai:
       base-url: https://api.deepseek.com

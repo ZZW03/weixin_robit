@@ -52,19 +52,30 @@ public class MyWebSocketClientQQ extends AbstractWebSocketEndpoint implements Me
 
         JSONObject obj = JSONObject.parseObject(json);
         String postType = obj.getString("post_type");
+        String messageType = obj.getString("message_type");
+        String messageId = obj.getString("message_id");
 
         if (postType.equals("meta_event")){
 
 
         }else if (postType.equals("message")){
-            log.info(JSON.toJSONString(json));
             QQPrivateMessage qqPrivateMessage = JSONObject.parseObject(json,QQPrivateMessage.class);
             MessageRecord messageRecord = qqPrivateMessage.toMessageRecord();
             messageRecordMapper.insert(messageRecord);
-            Response<QQSendResponse> qqSendResponseResponse = qqMessageRepository.sendMessage(qqPrivateMessage);
 
-        }else {
+            //群
+            if ("private".equals(messageType)){
+                log.info("收到私聊消息:{}",messageId);
+                Response<QQSendResponse> qqSendResponseResponse = qqMessageRepository.sendPrivateMessage(qqPrivateMessage);
+            }
 
+            //私聊
+            if ("group".equals(messageType)){
+                log.info("收到群聊消息:{}",messageId);
+                Response<QQSendResponse> qqSendResponseResponse = qqMessageRepository.sendGroupMessage(qqPrivateMessage);
+            }
+
+        }else{
             log.info("不处理");
         }
     }

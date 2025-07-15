@@ -6,6 +6,7 @@ import com.zzw.api.Constant;
 import com.zzw.api.enums.QQMessageTypeEnum;
 import com.zzw.api.model.response.Response;
 import com.zzw.domain.QQMessage.adapter.QQMessageOperation;
+import com.zzw.domain.QQMessage.model.req.QQGroupMessage;
 import com.zzw.domain.QQMessage.model.req.QQSimpleSendMessage;
 import com.zzw.domain.QQMessage.model.resp.QQSendResponse;
 import com.zzw.domain.QQMessage.model.websockekResp.*;
@@ -14,6 +15,7 @@ import com.zzw.infrastuction.dao.ReplyMessageRecordMapper;
 import com.zzw.infrastuction.dao.po.ReplyMessageRecord;
 import com.zzw.infrastuction.util.QQHttpClientUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.math.Primes;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
@@ -54,52 +56,102 @@ public class QQMessageRepository implements QQMessageOperation {
     @Autowired
     ReplyMessageRecordMapper replyMessageRecordMapper;
 
-
     private final ConcurrentHashMap<String, List<Message>> historyMap = new ConcurrentHashMap<>();
 
-        @Override
-        public Response<QQSendResponse> sendMessage(QQPrivateMessage request){
-            String sendUserId = request.getSender().getUserId();
+    @Override
+    public Response<QQSendResponse> sendPrivateMessage(QQPrivateMessage request){
+        String sendUserId = request.getSender().getUserId();
 
-            List<Message> userMsgThisRound = null;
-            String systemMessage = null;
+        List<Message> userMsgThisRound = null;
+        String systemMessage = null;
 
-            try {
-                userMsgThisRound = buildUserMsg(request);
-                systemMessage = buildSystemMessage(userMsgThisRound);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            List<Message> allMsgs = new ArrayList<>(
-                    historyMap.getOrDefault(sendUserId, new ArrayList<>()));
-            allMsgs.addAll(userMsgThisRound);
-
-            String assistantText = chatClient.prompt("你收到如下的信息\r\n")
-                    .messages(allMsgs)
-                    .system(systemMessage)
-                    .call()
-                    .content();
-
-
-            allMsgs.add(new AssistantMessage(assistantText));
-            // 只保留最近 100 条，避免 token 爆掉
-            if (allMsgs.size() > 10) {
-                allMsgs = allMsgs.subList(allMsgs.size() - 10, allMsgs.size());
-            }
-            historyMap.put(sendUserId, allMsgs);
-
-            QQSimpleSendMessage qqMsg = JSONObject.parseObject(assistantText, QQSimpleSendMessage.class);
-            qqMsg.setUserId(sendUserId);
-            QQSendResponse resp = qqHttpClientUtils.post(baseUrl + "send_private_msg", qqMsg, QQSendResponse.class);
-
-            ReplyMessageRecord replyMessageRecord = new ReplyMessageRecord();
-            replyMessageRecord.setReplyMessageContent(assistantText);
-            replyMessageRecord.setReplyMessageId(resp.getData().getMessageId());
-            replyMessageRecord.setCreateTime(OffsetDateTime.now());
-            replyMessageRecord.setUpdateTime(OffsetDateTime.now());
-            replyMessageRecordMapper.insert(replyMessageRecord);
-            return Response.success(resp);
+        try {
+            userMsgThisRound = buildUserMsg(request);
+            systemMessage = buildSystemMessage(userMsgThisRound);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+
+        List<Message> allMsgs = new ArrayList<>(historyMap.getOrDefault(sendUserId, new ArrayList<>()));
+        allMsgs.addAll(userMsgThisRound);
+
+        String assistantText = chatClient.prompt("你收到如下的信息\r\n")
+                .messages(allMsgs)
+                .system(systemMessage)
+                .call()
+                .content();
+
+
+        allMsgs.add(new AssistantMessage(assistantText));
+        // 只保留最近 100 条，避免 token 爆掉
+        if (allMsgs.size() > 10) {
+            allMsgs = allMsgs.subList(allMsgs.size() - 10, allMsgs.size());
+        }
+        historyMap.put(sendUserId, allMsgs);
+
+        QQSimpleSendMessage qqMsg = JSONObject.parseObject(assistantText, QQSimpleSendMessage.class);
+        qqMsg.setUserId(sendUserId);
+        QQSendResponse resp = qqHttpClientUtils.post(baseUrl + "send_private_msg", qqMsg, QQSendResponse.class);
+
+        ReplyMessageRecord replyMessageRecord = new ReplyMessageRecord();
+        replyMessageRecord.setReplyMessageContent(assistantText);
+        replyMessageRecord.setReplyMessageId(resp.getData().getMessageId());
+        replyMessageRecord.setCreateTime(OffsetDateTime.now());
+        replyMessageRecord.setUpdateTime(OffsetDateTime.now());
+        replyMessageRecordMapper.insert(replyMessageRecord);
+        return Response.success(resp);
+    }
+
+    @Override
+    public Response<QQSendResponse> sendGroupMessage(QQPrivateMessage request) {
+        if(!checkAt(request)){
+            return null;
+        }
+
+        List<Message> userMsgThisRound = null;
+        String systemMessage = null;
+
+        try {
+            userMsgThisRound = buildUserMsg(request);
+            systemMessage = buildSystemMessage(userMsgThisRound);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        List<Message> allMsgs = new ArrayList<>(historyMap.getOrDefault(request.getGroupId(), new ArrayList<>()));
+        allMsgs.addAll(userMsgThisRound);
+
+        String assistantText = chatClient.prompt("你收到如下的信息\r\n")
+                .messages(allMsgs)
+                .system(systemMessage)
+                .call()
+                .content();
+
+        if (assistantText != null) {
+            allMsgs.add(new AssistantMessage(assistantText));
+        }
+        // 只保留最近 100 条，避免 token 爆掉
+        if (allMsgs.size() > 20) {
+            allMsgs = allMsgs.subList(allMsgs.size() - 10, allMsgs.size());
+        }
+        historyMap.put(request.getGroupId(), allMsgs);
+
+        QQGroupMessage qqMsg = JSONObject.parseObject(assistantText, QQGroupMessage.class);
+        qqMsg.setGroupId(request.getGroupId());
+        QQSendResponse resp = qqHttpClientUtils.post(baseUrl + "send_group_msg", qqMsg, QQSendResponse.class);
+        return null;
+    }
+
+    private boolean checkAt(QQPrivateMessage request) {
+        List<MessageBaseElement> message = request.getMessage();
+        if (!message.isEmpty()){
+            if (message.get(0).getType().equals("at")){
+                AtMessageElement atMessageElement = (AtMessageElement) request.getMessage().get(0);
+                return Objects.equals(atMessageElement.getData().getQq(), request.getSelfId());
+            }
+        }
+        return false;
+    }
 
     private String buildSystemMessage(List<Message> list) {
         List<String> collect = list.stream().map(Content::getText).toList();
@@ -163,6 +215,9 @@ public class QQMessageRepository implements QQMessageOperation {
                 ReplyMessageElement replyMessageElement = (ReplyMessageElement) v;
                 ReplyMessageRecord replyMessageRecord = replyMessageRecordMapper.selectByMessageId(Long.valueOf(replyMessageElement.getData().getId()));
                 list.add(new AssistantMessage("用户引用了你这条回答: " + replyMessageRecord.getReplyMessageContent()));
+            }else if (QQMessageTypeEnum.REPLY.getDesc().equals(v.getType())) {
+                AtMessageElement atMessageElement = (AtMessageElement) v;
+                list.add(new UserMessage(" user_id是："+request.getSender().getUserId()+"at 了你"));
             }
         }
 

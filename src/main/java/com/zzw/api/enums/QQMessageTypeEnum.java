@@ -4,7 +4,8 @@ public enum QQMessageTypeEnum implements BaseEnum{
     TEXT(1,"text"),
     FACE(2,"face"),
     IMAGE(3,"image"),
-    REPLY(4,"reply")
+    REPLY(4,"reply"),
+    AT(5,"at")
     ;
     private Integer code;
     private String desc;
