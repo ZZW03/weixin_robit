@@ -1,6 +1,7 @@
 package com.zzw.app.configuraion;
 
 import com.zaxxer.hikari.HikariDataSource;
+import com.zzw.infrastuction.tool.DateTimeTools;
 import io.micrometer.observation.ObservationRegistry;
 import io.modelcontextprotocol.client.McpSyncClient;
 import org.springframework.ai.chat.client.ChatClient;
@@ -18,7 +19,9 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.ai.tool.ToolCallbacks;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
@@ -154,11 +157,12 @@ public class DeepseekAIConfig {
                 .defaultOptions(options)
                 .build();
 
+        ToolCallback[] dateTimeTools = ToolCallbacks.from(new DateTimeTools(),syncMcpToolCallbackProvider);
 
 
         return ChatClient.builder(chatModel)
                 .defaultTemplateRenderer(new NoOpTemplateRenderer())
-                .defaultTools(syncMcpToolCallbackProvider)
+                .defaultToolCallbacks(dateTimeTools)
                 .defaultAdvisors(
                         new PromptChatMemoryAdvisor(chatMemory),
                         new SimpleLoggerAdvisor())

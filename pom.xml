@@ -88,6 +88,9 @@
             <version>1.0.0-M8</version>
         </dependency>
 
+
+
+
         <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
