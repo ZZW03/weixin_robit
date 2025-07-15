@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
-    url: jdbc:postgresql://49.235.216.182:15432/postgres
+    username: xxxxxx
+    password: xxxxxx
+    url: jdbc:postgresql://49.xxxxxx:15432/postgres
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       maximum-pool-size: 5
@@ -14,28 +14,28 @@ spring:
   application:
     name: weixin-server
   weixin:
-    currentUserName: wxid_45irb1z1yl4d12
-    adminKey: 999222
-    authCode: b126fc11-00f8-4479-8266-35d2bd2b698c
-    baseUrl: http://49.235.216.182:1238/
+    currentUserName: xxxxxx
+    adminKey: xxxxxx
+    authCode: b126fc11-00f8-xxxxxx-8266-35d2bd2b698c
+    baseUrl: http://49.xxxxxx.216.182:xxxxxx/
     sendMessageURl: message/SendTextMessage
-    connect : ws://49.235.216.182:1238/ws/GetSyncMsg?key=
+    connect : ws://49.235.xxxxxx.182:1238/ws/GetSyncMsg?key=
   qq:
-    token: Aa792144169
-    baseUrl: http://49.235.216.182:3000/
+    token: xxxxxx
+    baseUrl: http://49.235.xxxxxx.182:3000/
     websocket:
-      url: ws://49.235.216.182:3001/
+      url: ws://49.235.xxxxxx.182:3001/
 
 
   ai:
     openai:
       base-url: https://api.deepseek.com
-      api-key: sk-4c481a3983b5447697d6972172cef392
+      api-key: sk-xxxxxx
       chat:
         options:
-          model: deepseek-chat
+          model: xxxxxx-chat
     ollama:
-      base-url: http://49.235.216.182:11434
+      base-url: http://49.xxxxxx.216.182:11434
       mode:
       embedding-model: nomic-embed-text
       embedding:
@@ -45,9 +45,9 @@ spring:
       pgvector:
         datasource:
           driver-class-name: org.postgresql.Driver
-          username: postgres
-          password: postgres
-          url: jdbc:postgresql://49.235.216.182:15432/postgres
+          username: xxxxxx
+          password: xxxxxx
+          url: jdbc:postgresql://49.xxxxxx.xxxxxx.182:xxxxxx/postgres
           type: com.zaxxer.hikari.HikariDataSource
           hikari:
             maximum-pool-size: 5
@@ -59,9 +59,9 @@ spring:
         sse:
           connections:
             mcp-server-csdn:
-              url: http://49.235.216.182:8101
+              url: http://49.235.216.xxxxxx:xxxxxx
             mcp-server-context7:
-              url: http://122.51.46.6:5001
+              url: http://122.51.xxxxxx.6:xxxxxx
 mybatis:
   mapper-locations: classpath:/mybatis/mapper/*.xml
   config-location: classpath:/mybatis/config/mybatis-config.xml
